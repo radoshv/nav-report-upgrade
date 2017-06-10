@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NavUpgrade.Data", "NavUpgrade.Data\NavUpgrade.Data.csproj", "{7AEAB47C-299F-4BA1-B36E-27A328B80744}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NavUpgrade.Converter", "NavUpgrade.Converter\NavUpgrade.Converter.csproj", "{CFA60A5D-5DD2-4EAB-84C0-01CD06528378}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NavUpgrade.Parser", "NavUpgrade.Parser\NavUpgrade.Parser.csproj", "{7E553303-1EC3-45EB-8AC0-5B7F0CD1ACD0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7AEAB47C-299F-4BA1-B36E-27A328B80744}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AEAB47C-299F-4BA1-B36E-27A328B80744}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AEAB47C-299F-4BA1-B36E-27A328B80744}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AEAB47C-299F-4BA1-B36E-27A328B80744}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFA60A5D-5DD2-4EAB-84C0-01CD06528378}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFA60A5D-5DD2-4EAB-84C0-01CD06528378}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFA60A5D-5DD2-4EAB-84C0-01CD06528378}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFA60A5D-5DD2-4EAB-84C0-01CD06528378}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E553303-1EC3-45EB-8AC0-5B7F0CD1ACD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E553303-1EC3-45EB-8AC0-5B7F0CD1ACD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E553303-1EC3-45EB-8AC0-5B7F0CD1ACD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E553303-1EC3-45EB-8AC0-5B7F0CD1ACD0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
