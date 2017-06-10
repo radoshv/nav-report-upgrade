@@ -1,0 +1,827 @@
+OBJECT Report 61804 Options Droste
+{
+  OBJECT-PROPERTIES
+  {
+    Date=14.10.10;
+    Time=13:45:00;
+    Modified=Yes;
+    Version List=4PS.DR;
+  }
+  PROPERTIES
+  {
+    CaptionML=[ENU=Options Droste;
+               NLD=Bevestiging meer- en minderwerk];
+    OnInitReport=BEGIN
+                   PrintSignature := TRUE;
+                 END;
+
+    OnPreReport=BEGIN
+                  IF PrintSignature = TRUE THEN BEGIN
+                    reportname:= text010;
+                    paraafvak:= text020;
+                    paraafpuntjes:= text021;
+                  END ELSE BEGIN
+                    reportname:= text011;
+                    paraafvak:= '';
+                    paraafpuntjes:='';
+                  END;
+                END;
+
+  }
+  DATAITEMS
+  {
+    { PROPERTIES
+      {
+        DataItemTable=Table11012500;
+        DataItemTableView=SORTING(Project No.,Plot No.)
+                          WHERE(Principal=FILTER(<>''));
+        NewPagePerRecord=Yes;
+        PrintOnlyIfDetail=Yes;
+        OnPreDataItem=BEGIN
+                        CompanyInfo.GET;
+                        FormatAddr.Company(CompanyAddr,CompanyInfo);
+
+                        IF NOT CompanyInfoBl THEN BEGIN
+                          CompanyAddr[1] := '';
+                          CompanyAddr[2] := '';
+                          CompanyAddr[3] := '';
+                          CompanyAddr[4] := '';
+                          CompanyAddr[5] := '';
+                          CompanyAddr[6] := '';
+                          CompanyInfo."Phone No." := '';
+                          CompanyInfo."Fax No." := '';
+                          CompanyInfo."E-Mail" := '';
+                          CompanyInfo."Home Page" := '';
+                          CompanyInfo."Bank Name" := '';
+                          CompanyInfo."Bank Account No." := '';
+                          CompanyInfo."VAT Registration No." := '';
+                          CompanyInfo."COC Registration No." := '';
+                          TelefoonLbl := '';
+                          FaxLbl := '';
+                          EmailLbl := '';
+                          InternetLbl := '';
+                          BankLbl := '';
+                          ReknrLbl := '';
+                          BTWNrLbl := '';
+                          KvkLbl := '';
+                        END ELSE BEGIN
+                          TelefoonLbl := 'telefoon:';
+                          FaxLbl := 'fax:';
+                          EmailLbl := 'e-mail:';
+                          InternetLbl := 'internet:';
+                          BankLbl := 'bank:';
+                          ReknrLbl := 'rek.nr.:';
+                          BTWNrLbl := 'btw nr.:';
+                          KvkLbl := 'k.v.k.nr.:';
+                        END;
+                      END;
+
+        OnAfterGetRecord=BEGIN
+                           printfooteronnextpages:=TRUE;     // 4PS (FG)  14-10-10
+
+                           IF "Project No." <> ProjRec."No." THEN BEGIN
+                             ProjRec.GET("Project No.");
+                             FormatAddr.Project(ProjectAddress,ProjRec);
+                             ProjRec.CALCFIELDS("Name Site Manager");
+                           END;
+
+                           FormatAddr."Plot No."(CustAddr,Plot);
+                           Plot.CALCFIELDS("Buyer Name 2");
+
+                           //CurrReport.PAGENO := 1;
+                         END;
+
+        ReqFilterFields=Project No.,Plot No.,Principal;
+      }
+      SECTIONS
+      {
+        { PROPERTIES
+          {
+            SectionType=Footer;
+            PrintOnEveryPage=Yes;
+            PlaceInBottom=Yes;
+            SectionWidth=18030;
+            SectionHeight=846;
+            OnPreSection=BEGIN
+                           // to be printed on each page except last one in case signature is printed
+                           CurrReport.SHOWOUTPUT(printfooteronnextpages= TRUE);
+                         END;
+
+          }
+          CONTROLS
+          {
+            { 1100525010;TextBox;600  ;423  ;7950 ;423  ;HorzAlign=Left;
+                                                         FontName=Arial;
+                                                         FontSize=8;
+                                                         SourceExpr=ProjRec.Description }
+            { 1100525005;TextBox;15600;0    ;2400 ;423  ;HorzAlign=Left;
+                                                         FontName=Arial;
+                                                         FontSize=8;
+                                                         SourceExpr=paraafvak }
+            { 1100525007;TextBox;15600;423  ;2400 ;423  ;HorzAlign=Left;
+                                                         FontName=Arial;
+                                                         FontSize=8;
+                                                         SourceExpr=paraafpuntjes }
+          }
+           }
+        { PROPERTIES
+          {
+            SectionType=Footer;
+            PrintOnEveryPage=Yes;
+            PlaceInBottom=Yes;
+            SectionWidth=18030;
+            SectionHeight=423;
+            KeepWithNext=No;
+          }
+          CONTROLS
+          {
+            { 1100525009;Label  ;8700 ;0    ;900  ;423  ;FontName=Arial;
+                                                         FontSize=8;
+                                                         CaptionML=[ENU=Page;
+                                                                    NLD=Pagina] }
+            { 1100525008;TextBox;9600 ;0    ;750  ;423  ;FontName=Arial;
+                                                         FontSize=8;
+                                                         CaptionML=[ENU=Page;
+                                                                    NLD=Blad];
+                                                         SourceExpr=CurrReport.PAGENO }
+          }
+           }
+      }
+       }
+    { PROPERTIES
+      {
+        DataItemIndent=1;
+        DataItemTable=Table11012502;
+        DataItemTableView=SORTING(Project No.,Plot No.,House Model,Main Group,Group,Sub Group,Option);
+        ReqFilterFields=Group;
+        TotalFields=Sales Amount incl. VAT;
+        GroupTotalFields=Project No.,Plot No.,Group,Sub Group;
+        DataItemLink=Project No.=FIELD(Project No.),
+                     Plot No.=FIELD(Plot No.);
+      }
+      SECTIONS
+      {
+        { PROPERTIES
+          {
+            SectionType=Header;
+            PrintOnEveryPage=Yes;
+            SectionWidth=18030;
+            SectionHeight=8883;
+            OnPreSection=BEGIN
+                           CurrReport.SHOWOUTPUT(CurrReport.PAGENO=1);
+                         END;
+
+          }
+          CONTROLS
+          {
+            { 1210190000;TextBox;600  ;3384 ;6300 ;423  ;FontName=Arial;
+                                                         FontSize=10;
+                                                         SourceExpr=CustAddr[1] }
+            { 1210190001;TextBox;600  ;3807 ;6300 ;423  ;FontName=Arial;
+                                                         FontSize=10;
+                                                         SourceExpr=CustAddr[2] }
+            { 1210190002;TextBox;600  ;4230 ;6300 ;423  ;FontName=Arial;
+                                                         FontSize=10;
+                                                         SourceExpr=CustAddr[3] }
+            { 1210190003;TextBox;600  ;4653 ;6300 ;423  ;FontName=Arial;
+                                                         FontSize=10;
+                                                         SourceExpr=CustAddr[4] }
+            { 1210190004;TextBox;600  ;5076 ;6300 ;423  ;FontName=Arial;
+                                                         FontSize=10;
+                                                         SourceExpr=CustAddr[5] }
+            { 1210190005;TextBox;600  ;5499 ;6300 ;423  ;FontName=Arial;
+                                                         FontSize=10;
+                                                         SourceExpr=CustAddr[6] }
+            { 1210190006;TextBox;600  ;5922 ;6300 ;423  ;FontName=Arial;
+                                                         FontSize=10;
+                                                         SourceExpr=CustAddr[7] }
+            { 1210190007;TextBox;600  ;6345 ;6300 ;423  ;FontName=Arial;
+                                                         FontSize=10;
+                                                         SourceExpr=CustAddr[8] }
+            { 1210190008;TextBox;3150 ;6768 ;4500 ;423  ;HorzAlign=Left;
+                                                         FontName=Arial;
+                                                         FontSize=10;
+                                                         SourceExpr=FORMAT(TODAY,0,'<Day> <Month text> <year4>') }
+            { 1210190009;Label  ;600  ;6768 ;2400 ;423  ;Name=Datum:;
+                                                         FontName=Arial;
+                                                         FontSize=10;
+                                                         CaptionML=[ENU=Date:;
+                                                                    NLD=Datum:] }
+            { 1210190010;Label  ;600  ;7614 ;2400 ;423  ;Name=Werknummer:;
+                                                         FontName=Arial;
+                                                         FontSize=10 }
+            { 1210190011;TextBox;3150 ;7614 ;4500 ;423  ;HorzAlign=Left;
+                                                         FontName=Arial;
+                                                         FontSize=10;
+                                                         SourceExpr=ProjRec."No." }
+            { 1210190012;Label  ;600  ;8037 ;2400 ;423  ;Name=Bouwnummer:;
+                                                         FontName=Arial;
+                                                         FontSize=10 }
+            { 1210190013;TextBox;3150 ;8037 ;4500 ;423  ;HorzAlign=Left;
+                                                         FontName=Arial;
+                                                         FontSize=10;
+                                                         CaptionML=[ENU=Plot No.;
+                                                                    NLD=Bouwnummer];
+                                                         SourceExpr=Plot."Plot No." }
+            { 1210190014;Label  ;600  ;8460 ;2400 ;423  ;Name=Betreft:;
+                                                         FontName=Arial;
+                                                         FontSize=10 }
+            { 1000000003;TextBox;13200;5922 ;4830 ;423  ;FontName=Arial;
+                                                         FontSize=9;
+                                                         CaptionML=[ENU=reg. no.:;
+                                                                    NLD=k.v.k.nr.:];
+                                                         SourceExpr=CompanyInfo."COC Registration No." }
+            { 1000000004;TextBox;11100;5922 ;2100 ;423  ;FontName=Arial;
+                                                         FontSize=9;
+                                                         SourceExpr=KvkLbl }
+            { 1000000005;TextBox;13200;5499 ;4830 ;423  ;FontName=Arial;
+                                                         FontSize=9;
+                                                         CaptionML=[ENU=reg. no.:;
+                                                                    NLD=btw nr.:];
+                                                         SourceExpr=CompanyInfo."VAT Registration No." }
+            { 1000000006;TextBox;11100;5499 ;2100 ;423  ;FontName=Arial;
+                                                         FontSize=9;
+                                                         SourceExpr=BTWNrLbl }
+            { 1000000007;TextBox;13200;5076 ;4830 ;423  ;FontName=Arial;
+                                                         FontSize=9;
+                                                         CaptionML=[ENU=Account No.;
+                                                                    NLD=Rekeningnr.];
+                                                         SourceExpr=CompanyInfo."Bank Account No." }
+            { 1000000008;TextBox;11100;5076 ;2100 ;423  ;FontName=Arial;
+                                                         FontSize=9;
+                                                         SourceExpr=ReknrLbl }
+            { 1000000009;TextBox;13200;4653 ;4830 ;423  ;FontName=Arial;
+                                                         FontSize=9;
+                                                         CaptionML=[ENU=Bank;
+                                                                    NLD=Bank];
+                                                         SourceExpr=CompanyInfo."Bank Name" }
+            { 1000000010;TextBox;11100;4653 ;2100 ;423  ;FontName=Arial;
+                                                         FontSize=9;
+                                                         SourceExpr=BankLbl }
+            { 1000000011;TextBox;13200;3807 ;4830 ;423  ;FontName=Arial;
+                                                         FontSize=9;
+                                                         SourceExpr=CompanyInfo."Home Page" }
+            { 1000000012;TextBox;13200;3384 ;4830 ;423  ;FontName=Arial;
+                                                         FontSize=9;
+                                                         SourceExpr=CompanyInfo."E-Mail" }
+            { 1000000013;TextBox;11100;3384 ;2100 ;423  ;FontName=Arial;
+                                                         FontSize=9;
+                                                         SourceExpr=EmailLbl }
+            { 1000000014;TextBox;11100;3807 ;2100 ;423  ;FontName=Arial;
+                                                         FontSize=9;
+                                                         SourceExpr=InternetLbl }
+            { 1000000015;TextBox;13200;2961 ;4830 ;423  ;FontName=Arial;
+                                                         FontSize=9;
+                                                         CaptionML=[ENU=Fax No.;
+                                                                    NLD=Fax];
+                                                         SourceExpr=CompanyInfo."Fax No." }
+            { 1000000016;TextBox;13200;2538 ;4830 ;423  ;FontName=Arial;
+                                                         FontSize=9;
+                                                         CaptionML=[ENU=Phone No.;
+                                                                    NLD=Telefoon];
+                                                         SourceExpr=CompanyInfo."Phone No." }
+            { 1000000017;TextBox;11100;2538 ;2100 ;423  ;FontName=Arial;
+                                                         FontSize=9;
+                                                         SourceExpr=TelefoonLbl }
+            { 1000000018;TextBox;11100;2961 ;2100 ;423  ;FontName=Arial;
+                                                         FontSize=9;
+                                                         SourceExpr=FaxLbl }
+            { 1000000019;TextBox;13200;2115 ;4830 ;423  ;FontName=Arial;
+                                                         FontSize=9;
+                                                         SourceExpr=CompanyAddr[6] }
+            { 1000000020;TextBox;13200;1692 ;4830 ;423  ;FontName=Arial;
+                                                         FontSize=9;
+                                                         SourceExpr=CompanyAddr[5] }
+            { 1000000021;TextBox;13200;1269 ;4830 ;423  ;FontName=Arial;
+                                                         FontSize=9;
+                                                         SourceExpr=CompanyAddr[4] }
+            { 1000000022;TextBox;13200;846  ;4830 ;423  ;FontName=Arial;
+                                                         FontSize=9;
+                                                         SourceExpr=CompanyAddr[3] }
+            { 1000000023;TextBox;13200;423  ;4830 ;423  ;FontName=Arial;
+                                                         FontSize=9;
+                                                         SourceExpr=CompanyAddr[2] }
+            { 1000000024;TextBox;13200;0    ;4830 ;423  ;FontName=Arial;
+                                                         FontSize=9;
+                                                         SourceExpr=CompanyAddr[1] }
+            { 1100525000;TextBox;3150 ;7191 ;14400;423  ;HorzAlign=Left;
+                                                         FontName=Arial;
+                                                         FontSize=10;
+                                                         SourceExpr=ProjRec.Description }
+            { 1100525001;Label  ;600  ;7191 ;2400 ;423  ;Name=Project:;
+                                                         FontName=Arial;
+                                                         FontSize=10 }
+            { 1100525002;TextBox;3150 ;8460 ;14400;423  ;HorzAlign=Left;
+                                                         FontName=Arial;
+                                                         FontSize=10;
+                                                         FontBold=Yes;
+                                                         CaptionML=[ENU=Plot No.;
+                                                                    NLD=rapportnaam];
+                                                         SourceExpr=reportname }
+          }
+           }
+        { PROPERTIES
+          {
+            SectionType=Header;
+            SectionWidth=18030;
+            SectionHeight=846;
+            OnPreSection=BEGIN
+                           CurrReport.SHOWOUTPUT(CurrReport.PAGENO >1);
+                         END;
+
+          }
+          CONTROLS
+          {
+          }
+           }
+        { PROPERTIES
+          {
+            SectionType=Header;
+            PrintOnEveryPage=Yes;
+            SectionWidth=18030;
+            SectionHeight=846;
+            OnPreSection=BEGIN
+                           // 4PS (FG) vergroot ivm loo op vervolgbladen
+                         END;
+
+          }
+          CONTROLS
+          {
+            { 72  ;Label        ;14250;0    ;1800 ;846  ;Name=Price;
+                                                         ParentControl=35;
+                                                         HorzAlign=Right;
+                                                         VertAlign=Bottom;
+                                                         FontName=Arial;
+                                                         FontSize=8;
+                                                         FontBold=No;
+                                                         MultiLine=Yes }
+            { 73  ;Label        ;13200;423  ;900  ;423  ;Name=Quantity;
+                                                         ParentControl=32;
+                                                         HorzAlign=Right;
+                                                         VertAlign=Bottom;
+                                                         FontName=Arial;
+                                                         FontSize=8;
+                                                         FontBold=No;
+                                                         MultiLine=Yes }
+            { 74  ;Label        ;1650 ;423  ;11400;423  ;ParentControl=26;
+                                                         VertAlign=Bottom;
+                                                         FontName=Arial;
+                                                         FontSize=8;
+                                                         FontBold=No;
+                                                         MultiLine=Yes }
+            { 80  ;Label        ;600  ;423  ;900  ;423  ;ParentControl=23;
+                                                         VertAlign=Bottom;
+                                                         FontName=Arial;
+                                                         FontSize=8;
+                                                         FontBold=No;
+                                                         MultiLine=Yes }
+            { 1000000001;Label  ;16200;0    ;1500 ;846  ;Name=Price;
+                                                         HorzAlign=Right;
+                                                         VertAlign=Bottom;
+                                                         FontName=Arial;
+                                                         FontSize=8;
+                                                         FontBold=No;
+                                                         MultiLine=Yes;
+                                                         CaptionML=NLD="        Totaal   incl. BTW" }
+          }
+           }
+        { PROPERTIES
+          {
+            SectionType=GroupHeader;
+            SectionWidth=18030;
+            SectionHeight=846;
+            OnPreSection=BEGIN
+                           CurrReport.SHOWOUTPUT :=
+                             ((CurrReport.TOTALSCAUSEDBY = FIELDNO(Group)) AND
+                              ("Group Description" <> ''));
+                         END;
+
+          }
+          CONTROLS
+          {
+            { 3   ;TextBox      ;1650 ;423  ;7050 ;423  ;HorzAlign=Left;
+                                                         FontName=Arial;
+                                                         FontSize=8;
+                                                         FontBold=Yes;
+                                                         FontItalic=No;
+                                                         SourceExpr="Group Description" }
+          }
+           }
+        { PROPERTIES
+          {
+            SectionType=GroupHeader;
+            SectionWidth=18030;
+            SectionHeight=846;
+            OnPreSection=BEGIN
+                           CurrReport.SHOWOUTPUT :=
+                             ((CurrReport.TOTALSCAUSEDBY = FIELDNO("Sub Group")) AND
+                              ("Sub Group Description" <> ''));
+                         END;
+
+          }
+          CONTROLS
+          {
+            { 4   ;TextBox      ;1650 ;423  ;7050 ;423  ;FontName=Arial;
+                                                         FontSize=8;
+                                                         FontBold=Yes;
+                                                         SourceExpr="Sub Group Description" }
+          }
+           }
+        { PROPERTIES
+          {
+            SectionType=Body;
+            SectionWidth=18030;
+            SectionHeight=423;
+            OnPreSection=BEGIN
+                           //CurrReport.SHOWOUTPUT("Sales Amount incl. VAT" <> 0);
+                           //4PS (FG) 1-10-10
+                           CurrReport.SHOWOUTPUT(Quantity <> 0);
+                           //4PS (FG) 14-10-10 : "Sales Amount incl. VAT" Blankzero uitgezet
+                         END;
+
+          }
+          CONTROLS
+          {
+            { 23  ;TextBox      ;600  ;0    ;900  ;423  ;HorzAlign=Left;
+                                                         FontName=Arial;
+                                                         FontSize=8;
+                                                         SourceExpr=Option }
+            { 26  ;TextBox      ;1650 ;0    ;11400;423  ;HorzAlign=Left;
+                                                         FontName=Arial;
+                                                         FontSize=8;
+                                                         SourceExpr=Description }
+            { 32  ;TextBox      ;13200;0    ;900  ;423  ;FontName=Arial;
+                                                         FontSize=8;
+                                                         DecimalPlaces=0:2;
+                                                         SourceExpr=Quantity }
+            { 35  ;TextBox      ;14250;0    ;1800 ;423  ;FontName=Arial;
+                                                         FontSize=8;
+                                                         BlankZero=Yes;
+                                                         SourceExpr="Sales Price incl. VAT" }
+            { 38  ;TextBox      ;16350;0    ;1350 ;423  ;FontName=Arial;
+                                                         FontSize=8;
+                                                         CaptionML=[ENU=Total;
+                                                                    NLD=Totaal];
+                                                         BlankZero=No;
+                                                         SourceExpr="Sales Amount incl. VAT" }
+          }
+           }
+        { PROPERTIES
+          {
+            SectionType=Body;
+            SectionWidth=18030;
+            SectionHeight=423;
+            OnPreSection=BEGIN
+                           //CurrReport.SHOWOUTPUT("Sales Amount incl. VAT" = 0);
+                           //4PS (FG) 1-10-10
+                           CurrReport.SHOWOUTPUT(Quantity = 0);
+                         END;
+
+          }
+          CONTROLS
+          {
+            { 1100525004;TextBox;1650 ;0    ;11400;423  ;HorzAlign=Left;
+                                                         FontName=Arial;
+                                                         FontSize=8;
+                                                         SourceExpr=Description }
+            { 1100525006;TextBox;600  ;0    ;900  ;423  ;HorzAlign=Left;
+                                                         FontName=Arial;
+                                                         FontSize=8;
+                                                         SourceExpr=Option }
+          }
+           }
+        { PROPERTIES
+          {
+            SectionType=GroupFooter;
+            SectionWidth=18030;
+            SectionHeight=1269;
+            OnPreSection=BEGIN
+                           CurrReport.SHOWOUTPUT :=
+                             ((CurrReport.TOTALSCAUSEDBY = FIELDNO(Group)) AND
+                              ("Group Description" <> ''));
+                         END;
+
+          }
+          CONTROLS
+          {
+            { 43  ;TextBox      ;16350;423  ;1350 ;423  ;FontName=Arial;
+                                                         FontSize=8;
+                                                         FontBold=Yes;
+                                                         SourceExpr="Sales Amount incl. VAT" }
+            { 5   ;TextBox      ;1650 ;423  ;4500 ;423  ;HorzAlign=Left;
+                                                         FontName=Arial;
+                                                         FontSize=8;
+                                                         FontBold=Yes;
+                                                         FontItalic=No;
+                                                         SourceExpr=Text001 + "Group Description" }
+            { 1000000002;Label  ;16050;423  ;300  ;423  ;Name=Naam:;
+                                                         HorzAlign=Right;
+                                                         FontName=Arial;
+                                                         FontSize=8;
+                                                         FontBold=Yes;
+                                                         CaptionML=NLD=° }
+          }
+           }
+        { PROPERTIES
+          {
+            SectionType=GroupFooter;
+            SectionWidth=18030;
+            SectionHeight=846;
+            KeepWithNext=No;
+            OnPreSection=BEGIN
+                           CurrReport.SHOWOUTPUT :=
+                             CurrReport.TOTALSCAUSEDBY = FIELDNO("Plot No.");
+                         END;
+
+          }
+          CONTROLS
+          {
+            { 45  ;TextBox      ;16200;423  ;1500 ;423  ;FontName=Arial;
+                                                         FontSize=8;
+                                                         FontBold=Yes;
+                                                         SourceExpr="Sales Amount incl. VAT" }
+            { 1210190033;TextBox;1650 ;423  ;7050 ;423  ;FontName=Arial;
+                                                         FontSize=8;
+                                                         FontBold=Yes;
+                                                         FontItalic=No;
+                                                         SourceExpr=Text003 }
+            { 1000000000;Label  ;15900;423  ;300  ;423  ;Name=Naam:;
+                                                         HorzAlign=Right;
+                                                         FontName=Arial;
+                                                         FontSize=8;
+                                                         FontBold=Yes;
+                                                         CaptionML=NLD=° }
+          }
+           }
+      }
+       }
+    { PROPERTIES
+      {
+        DataItemIndent=2;
+        DataItemTable=Table11012511;
+        DataItemTableView=SORTING(Table,Text Type,Project No.,House Model,Option Main Group,Option Sub Group,Option Group,Plot No.,Option,Quote No.,Quote Line No.,Text Line No.)
+                          WHERE(Table=CONST(Option),
+                                Text Type=CONST(Sales));
+        DataItemVarName=Verkooptekst;
+        DataItemLink=Project No.=FIELD(Project No.),
+                     Plot No.=FIELD(Plot No.),
+                     House Model=FIELD(House Model),
+                     Option Main Group=FIELD(Main Group),
+                     Option Group=FIELD(Group),
+                     Option Sub Group=FIELD(Sub Group),
+                     Option=FIELD(Option);
+      }
+      SECTIONS
+      {
+        { PROPERTIES
+          {
+            SectionType=Body;
+            SectionWidth=18030;
+            SectionHeight=423;
+          }
+          CONTROLS
+          {
+            { 1210190035;TextBox;1650 ;0    ;14400;423  ;SourceExpr=Text }
+            { 1100485001;TextBox;600  ;0    ;900  ;423  ;Visible=No;
+                                                         HorzAlign=Left;
+                                                         FontName=Arial;
+                                                         FontSize=8;
+                                                         SourceExpr="Text Type" }
+          }
+           }
+      }
+       }
+    { PROPERTIES
+      {
+        DataItemIndent=2;
+        DataItemTable=Table11012511;
+        DataItemTableView=SORTING(Table,Text Type,Project No.,House Model,Option Main Group,Option Sub Group,Option Group,Plot No.,Option,Quote No.,Quote Line No.,Text Line No.)
+                          WHERE(Table=CONST(Option),
+                                Text Type=CONST(Technical));
+        DataItemVarName=Technischetekst;
+        DataItemLink=Project No.=FIELD(Project No.),
+                     Plot No.=FIELD(Plot No.),
+                     House Model=FIELD(House Model),
+                     Option Main Group=FIELD(Main Group),
+                     Option Group=FIELD(Group),
+                     Option Sub Group=FIELD(Sub Group),
+                     Option=FIELD(Option);
+      }
+      SECTIONS
+      {
+        { PROPERTIES
+          {
+            SectionType=Body;
+            SectionWidth=18030;
+            SectionHeight=423;
+          }
+          CONTROLS
+          {
+            { 1100485000;TextBox;1650 ;0    ;14400;423  ;SourceExpr=Text }
+            { 1100485002;TextBox;600  ;0    ;900  ;423  ;Visible=No;
+                                                         HorzAlign=Left;
+                                                         FontName=Arial;
+                                                         FontSize=8;
+                                                         SourceExpr="Text Type" }
+          }
+           }
+      }
+       }
+    { PROPERTIES
+      {
+        DataItemIndent=1;
+        DataItemTable=Table2000000026;
+        DataItemTableView=SORTING(Number)
+                          WHERE(Number=CONST(1));
+        DataItemVarName=signature;
+        OnAfterGetRecord=BEGIN
+                           // 4PS (FG)  30-9-10
+                           gPlotRec.COPY(Plot);
+                         END;
+
+      }
+      SECTIONS
+      {
+        { PROPERTIES
+          {
+            SectionType=Footer;
+            PrintOnEveryPage=Yes;
+            PlaceInBottom=Yes;
+            SectionWidth=18030;
+            SectionHeight=4230;
+            OnPreSection=BEGIN
+                           ProjRec.CALCFIELDS("Name Buyer Contact");
+                           // 4PS (FG)  30-9-10 section for signature on last page
+                           CurrReport.SHOWOUTPUT(FALSE);
+                           IF ((gPlotRec.NEXT = 0) AND (PrintSignature = TRUE)) THEN BEGIN
+                             CurrReport.SHOWOUTPUT(TRUE);
+                             printfooteronnextpages := FALSE;
+                           END;
+                         END;
+
+          }
+          CONTROLS
+          {
+            { 1210190016;Label  ;600  ;423  ;3000 ;423  ;Name=Voor akkoord:;
+                                                         FontName=Arial;
+                                                         FontSize=10 }
+            { 1210190017;Label  ;600  ;1269 ;2250 ;423  ;FontName=Arial;
+                                                         FontSize=10;
+                                                         CaptionML=NLD=Ondernemer: }
+            { 1210190018;Label  ;600  ;2115 ;1800 ;423  ;Name=Plaats:;
+                                                         FontName=Arial;
+                                                         FontSize=10;
+                                                         CaptionML=NLD=Plaats: }
+            { 1210190019;Label  ;600  ;2538 ;1800 ;423  ;Name=Datum:;
+                                                         FontName=Arial;
+                                                         FontSize=10;
+                                                         CaptionML=NLD=Datum: }
+            { 1210190020;Label  ;600  ;1692 ;1800 ;423  ;Name=Naam:;
+                                                         FontName=Arial;
+                                                         FontSize=10;
+                                                         CaptionML=NLD=Naam: }
+            { 1210190021;Label  ;600  ;2961 ;2400 ;423  ;Name=Handtekening:;
+                                                         FontName=Arial;
+                                                         FontSize=10;
+                                                         CaptionML=NLD=Handtekening: }
+            { 1210190024;TextBox;3150 ;1692 ;6150 ;423  ;FontName=Arial;
+                                                         FontSize=10;
+                                                         SourceExpr=ProjRec."Name Buyer Contact" }
+            { 1210190030;TextBox;3150 ;2538 ;6150 ;423  ;HorzAlign=Left;
+                                                         FontName=Arial;
+                                                         FontSize=10;
+                                                         SourceExpr=FORMAT(TODAY,0,'<Day> <Month text> <year4>') }
+            { 1210190022;TextBox;3150 ;1269 ;6150 ;423  ;FontName=Arial;
+                                                         FontSize=10;
+                                                         SourceExpr=ProjRec.Name }
+            { 1000000025;Label  ;3150 ;2115 ;3000 ;423  ;Name=Handtekening:;
+                                                         FontName=Arial;
+                                                         FontSize=10;
+                                                         CaptionML=NLD=Hengelo }
+            { 1210190025;Label  ;10350;1269 ;2550 ;423  ;Name=Opdrachtgever:;
+                                                         FontName=Arial;
+                                                         FontSize=10;
+                                                         CaptionML=NLD=Opdrachtgever: }
+            { 1210190026;Label  ;10350;2115 ;2550 ;423  ;Name=Plaats:;
+                                                         FontName=Arial;
+                                                         FontSize=10;
+                                                         CaptionML=NLD=Plaats: }
+            { 1210190027;Label  ;10350;2538 ;2550 ;423  ;Name=Datum:;
+                                                         FontName=Arial;
+                                                         FontSize=10;
+                                                         CaptionML=NLD=Datum: }
+            { 1210190029;Label  ;10350;2961 ;2550 ;423  ;Name=Handtekening:;
+                                                         FontName=Arial;
+                                                         FontSize=10;
+                                                         CaptionML=NLD=Handtekening: }
+            { 1210190031;TextBox;13050;1269 ;4650 ;423  ;FontName=Arial;
+                                                         FontSize=10;
+                                                         SourceExpr=CustAddr[1] }
+            { 1100485003;TextBox;13050;1692 ;4650 ;423  ;FontName=Arial;
+                                                         FontSize=10;
+                                                         SourceExpr=Plot."Buyer Name 2" }
+            { 1100525003;Label  ;3150 ;3384 ;6150 ;423  ;Name=Datum:;
+                                                         FontName=Arial;
+                                                         FontSize=10;
+                                                         CaptionML=[ENU=Date:;
+                                                                    NLD=.......................................] }
+            { 1100525011;Label  ;12000;3384 ;6000 ;423  ;Name=Datum:;
+                                                         FontName=Arial;
+                                                         FontSize=10;
+                                                         CaptionML=[ENU=Date:;
+                                                                    NLD=.......................................] }
+          }
+           }
+      }
+       }
+  }
+  REQUESTFORM
+  {
+    PROPERTIES
+    {
+      Width=10230;
+      Height=2200;
+    }
+    CONTROLS
+    {
+      { 1000000000;CheckBox;3520;110  ;440  ;440  ;InPage=-1;
+                                                   ShowCaption=No;
+                                                   SourceExpr=CompanyInfoBl }
+      { 1000000001;Label  ;110  ;110  ;3300 ;440  ;ParentControl=1000000000;
+                                                   CaptionML=[ENU=Print Companyinfo;
+                                                              NLD=Bedrijfsgegevens printen] }
+      { 1100525000;CheckBox;3520;660  ;440  ;440  ;InPage=-1;
+                                                   ShowCaption=No;
+                                                   CaptionML=[ENU=Print Signature;
+                                                              NLD=Afdrukken ondertekening];
+                                                   SourceExpr=PrintSignature }
+      { 1100525001;Label  ;110  ;660  ;3300 ;440  ;ParentControl=1100525000 }
+      { 1100525002;Label  ;4070 ;660  ;5720 ;880  ;InPage=-1;
+                                                   HorzAlign=Left;
+                                                   VertAlign=Top;
+                                                   ForeColor=255;
+                                                   BackColor=255;
+                                                   MultiLine=Yes;
+                                                   CaptionML=NLD=bij afdrukken ondertekening wordt Bevestiging geprint, anders Totaaloverzicht }
+    }
+  }
+  REQUESTPAGE
+  {
+    PROPERTIES
+    {
+    }
+    CONTROLS
+    {
+    }
+  }
+  CODE
+  {
+    VAR
+      Text000@11012007 : TextConst 'ENU=Page %1;NLD=Pagina %1';
+      Text001@11012008 : TextConst 'ENU="Total ";NLD="Totaal "';
+      Text002@1210190000 : TextConst 'NLD=Zonder getekende optielijst kunnen er geen wijzigingen worden uitgevoerd.';
+      Text003@1210190001 : TextConst 'NLD=TOTAAL MEER EN MINDERWERK';
+      Text004@1210190002 : TextConst 'NLD=Aannemingsbedrijf J.A. Droste B.V.';
+      Text005@1210190003 : TextConst 'NLD=Hengelo';
+      TotalFor@11012000 : TextConst 'ENU="Total for ";NLD="Totaal voor "';
+      CompanyInfo@11012001 : Record 79;
+      ProjRec@11012002 : Record 11072003;
+      FormatAddr@11012003 : Codeunit 365;
+      CompanyAddr@11012004 : ARRAY [8] OF Text[50];
+      ProjectAddress@11012005 : ARRAY [8] OF Text[50];
+      CustAddr@11012006 : ARRAY [8] OF Text[50];
+      CompanyInfoBl@1000000008 : Boolean;
+      TelefoonLbl@1000000007 : Text[30];
+      FaxLbl@1000000006 : Text[30];
+      EmailLbl@1000000005 : Text[30];
+      InternetLbl@1000000004 : Text[30];
+      BankLbl@1000000003 : Text[30];
+      ReknrLbl@1000000002 : Text[30];
+      BTWNrLbl@1000000001 : Text[30];
+      KvkLbl@1000000000 : Text[30];
+      PrintSignature@1100525000 : Boolean;
+      text010@1100525001 : TextConst 'NLD=Bevestiging meer- en minderwerk';
+      text011@1100525002 : TextConst 'NLD=Totaaloverzicht meer- en minderwerk';
+      reportname@1100525003 : Text[50];
+      gPlotRec@1100525004 : Record 11012500;
+      printfooteronnextpages@1100525005 : Boolean;
+      paraafvak@1100525006 : Text[30];
+      text020@1100525007 : TextConst 'NLD=Paraaf koper(s):';
+      text021@1100525008 : TextConst 'NLD=.......................................';
+      paraafpuntjes@1100525009 : Text[50];
+
+    BEGIN
+    {
+      //20061009-4PS    : Report Layout aangepast op verzoek (zie fax 1 september 2006 Joris Tukkers)
+      //20061222-Droste : Report zelf aangepast (naam aannemer automatisch laten vullen met projectopdrachtgever)
+      //4PS (FG) 1-10-10: conditie voor wel/niet regels printen gewijzigd
+      //4PS (FG)14-10-10: als aantal>0 dan toch bedrag 0,00 zichtbaar; paraaf op 1e pagina (let op kiwa-logo) en tekst door logo op
+                           vervolgbladen
+    }
+    END.
+  }
+  RDLDATA
+  {
+  }
+}
+
